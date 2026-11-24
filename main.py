@@ -5,6 +5,7 @@ when the variable is unset. Create the output directory if it does not exist.
 """
 
 import os
+import sys
 from pathlib import Path
 
 
@@ -17,7 +18,12 @@ def resolve_directories():
 
 def main():
     script_dir, output_dir = resolve_directories()
-    image_bytes = (script_dir / "entry_image.jpg").read_bytes()
+    try:
+        image_bytes = (script_dir / "entry_image.jpg").read_bytes()
+    except FileNotFoundError:
+        print("Error: entry_image.jpg is missing.", file=sys.stderr)
+        sys.exit(1)
+
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "entry.png").write_bytes(image_bytes)
 
